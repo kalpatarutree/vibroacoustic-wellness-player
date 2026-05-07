@@ -8,11 +8,13 @@ export const BRAND = {
   tagline: 'Sound healing through precision vibroacoustic technology.',
 
   // About / info text — use \n\n for paragraph breaks
-  about: `[Device/brand name] is a vibroacoustic wellness system designed to deliver therapeutic sound frequencies directly through the body. Each session is carefully composed to target specific physiological and neurological states.
+  about: `This app is designed to be used with vibroacoustic devices. A couple of the devices available are the Floorvibez and Table Vibez products offered by Vibroacoustic Wellness LLC. These devices vibrate tactile frequencies that can be felt by the body. This sends a strong signal that persuades an entrainment effect where the body quickly and naturally responds to the effect of the sound. This can be helpful for general wellness and stress reduction, prompting the sympathetic nervous system to become dominant.
 
-[Add your full description here — what makes the device unique, the science behind it, who it's for.]
+Research has found that this can be helpful with general conditions like anxiety and insomnia, but also relieve suffering associated with autism, dementia, and other neurodivergent orientations.
 
-Sessions range from deep relaxation and sleep support to focused awareness and grounding practices. The player is designed to be simple, immersive, and distraction-free.`,
+The tracks are composed with a decades-rich background in psychoacoustics and sound healing modalities. A collection of carefully curated sounds can be found here within this app and used in vibroacoustic devices, saving the users from having to search platforms like YouTube and Spotify — which makes it hard to catalog and collect the desired sounds, not to mention having to deal with advertisements and subscription fees. Not to mention the ever-increasing incidences of AI generated music, which from a sound healing perspective, are not conducive to a human being's greatest wellness.
+
+It is with great thought, care, and joy that this app and these devices have been created, and it is our deepest prayer that you may find benefit.`,
 
   links: {
     website:   '',   // e.g. 'https://yourdevice.com'
