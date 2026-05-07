@@ -386,7 +386,7 @@ export default function AudioPlayer() {
       )}
 
       {/* logo */}
-      <div className="absolute left-5 pointer-events-none z-10"
+      <div className="absolute inset-x-0 flex justify-center pointer-events-none z-10"
         style={{ top: 'max(env(safe-area-inset-top), 44px)' }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/logo.svg" alt="Vibroacoustic Wellness" style={{ width: 180, opacity: 0.9 }} />
@@ -473,7 +473,7 @@ export default function AudioPlayer() {
             {currentTracks.map((t, i) => {
               const dist = Math.abs(i - trackIdx - dragRatio);
               return (
-                <div key={t.src || i} className="flex flex-col justify-end px-8" style={{ width: '100vw' }}>
+                <div key={t.src || i} className="flex flex-col justify-end items-center text-center px-8" style={{ width: '100vw' }}>
                   <p className="font-sans text-[10px] tracking-[0.28em] uppercase mb-1.5 transition-all duration-500"
                     style={{ color: `rgba(255,255,255,${Math.max(0, 0.35 - dist * 0.25)})` }}>
                     {currentCat?.name}
@@ -503,7 +503,7 @@ export default function AudioPlayer() {
       )}
 
       {/* about / support buttons — always visible */}
-      <div className="absolute left-6 flex items-center gap-3"
+      <div className="absolute inset-x-0 flex items-center justify-center gap-3"
         style={{ bottom: 'calc(var(--panel-h, 200px) + 22px)' }}
         onClick={e => e.stopPropagation()}>
         <button onClick={() => setShowAbout(true)}
