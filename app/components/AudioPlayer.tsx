@@ -56,22 +56,33 @@ const IconShuffle = () => (
 
 function BgLayer({ track, visible, shift }: { track: Track; visible: boolean; shift: number }) {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [videoReady, setVideoReady] = useState(false);
+
   useEffect(() => {
+    setVideoReady(false);
     if (track.isVideo && videoRef.current) {
       videoRef.current.load();
       videoRef.current.play().catch(() => {});
     }
   }, [track.visual, track.isVideo]);
 
+  const style = (extra?: object) => ({
+    transform: `scale(1.15) translateX(${shift * -20}px)`,
+    filter: 'brightness(0.72)',
+    ...extra,
+  });
+
   return (
     <div className="absolute inset-0 transition-opacity duration-1000 ease-in-out" style={{ opacity: visible ? 1 : 0 }}>
-      {track.isVideo ? (
-        <video ref={videoRef} src={track.visual} autoPlay loop muted playsInline className="w-full h-full object-cover"
-          style={{ transform: `scale(1.15) translateX(${shift * -20}px)`, filter: 'brightness(0.72)' }} />
-      ) : (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img src={track.visual} alt="" className="w-full h-full object-cover"
-          style={{ transform: `scale(1.15) translateX(${shift * -20}px)`, filter: 'brightness(0.72)' }} />
+      {/* thumbnail jpg loads instantly — always shown as base layer */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={track.thumbnail} alt="" className="absolute inset-0 w-full h-full object-cover" style={style()} />
+      {/* video fades in on top once ready */}
+      {track.isVideo && (
+        <video ref={videoRef} src={track.visual} autoPlay loop muted playsInline
+          className="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000"
+          style={style({ opacity: videoReady ? 1 : 0 })}
+          onCanPlay={() => setVideoReady(true)} />
       )}
     </div>
   );
@@ -164,12 +175,25 @@ export default function AudioPlayer() {
     const cat = allCategories[cIdx];
     if (!cat || tIdx < 0 || tIdx >= cat.tracks.length) return;
     const targetTrack = cat.tracks[tIdx];
-    const curr = activeBgRef.current;
-    setBgSlots(prev => { const next = [...prev] as [Track, Track]; next[curr === 0 ? 1 : 0] = targetTrack; return next; });
-    setActiveBg(curr === 0 ? 1 : 0);
-    setCatIdx(cIdx);
-    setTrackIdx(tIdx);
-    setDragX(0);
+
+    const doSwap = () => {
+      const curr = activeBgRef.current;
+      setBgSlots(prev => { const next = [...prev] as [Track, Track]; next[curr === 0 ? 1 : 0] = targetTrack; return next; });
+      setActiveBg(curr === 0 ? 1 : 0);
+      setCatIdx(cIdx);
+      setTrackIdx(tIdx);
+      setDragX(0);
+    };
+
+    // Preload the thumbnail jpg first — only crossfade once it's in cache
+    const img = new window.Image();
+    let done = false;
+    const finish = () => { if (!done) { done = true; doSwap(); } };
+    img.onload  = finish;
+    img.onerror = finish; // proceed even on failure
+    img.src = targetTrack.thumbnail;
+    // Safety fallback: never wait more than 400ms
+    setTimeout(finish, 400);
   }, []);
 
   // ── audio events ──────────────────────────────────────────
@@ -244,17 +268,16 @@ export default function AudioPlayer() {
     }
     e.preventDefault();
     if (isHoriz.current) {
-      const tCount = allCategories[catIdxRef.current]?.tracks.length ?? 1;
-      const edge = (dx > 0 && trackIdxRef.current === 0) || (dx < 0 && trackIdxRef.current === tCount - 1);
-      setDragX(edge ? dx * 0.12 : dx);
+      setDragX(dx); // no rubber-band resistance since we loop
     }
   };
 
   const onTouchEnd = () => {
     setIsDragging(false);
     if (isHoriz.current === true) {
-      if      (dragX < -SWIPE_PX) goTo(catIdxRef.current, trackIdxRef.current + 1);
-      else if (dragX >  SWIPE_PX) goTo(catIdxRef.current, trackIdxRef.current - 1);
+      const tCount = allCategories[catIdxRef.current]?.tracks.length ?? 1;
+      if      (dragX < -SWIPE_PX) goTo(catIdxRef.current, (trackIdxRef.current + 1) % tCount);
+      else if (dragX >  SWIPE_PX) goTo(catIdxRef.current, (trackIdxRef.current - 1 + tCount) % tCount);
       else setDragX(0);
     } else if (isHoriz.current === false) {
       const dy = tyCurrent.current - tyStart.current;
@@ -526,7 +549,7 @@ export default function AudioPlayer() {
             </div>
 
             <div className="flex items-center gap-6">
-              <button onClick={() => goTo(catIdx, trackIdx - 1)} disabled={!hasContent || trackIdx === 0}
+              <button onClick={() => goTo(catIdx, (trackIdx - 1 + currentTracks.length) % currentTracks.length)} disabled={!hasContent}
                 className="text-white/60 hover:text-white disabled:opacity-20 transition-colors active:scale-90"><IconPrev /></button>
               <button onClick={togglePlay} disabled={!hasContent}
                 className="relative w-[60px] h-[60px] rounded-full flex items-center justify-center transition-transform active:scale-95 disabled:opacity-30"
@@ -535,7 +558,7 @@ export default function AudioPlayer() {
                   ? <div className="w-5 h-5 rounded-full border-2 border-black/20 border-t-black/70 animate-spin" />
                   : isPlaying ? <IconPause /> : <IconPlay />}
               </button>
-              <button onClick={() => goTo(catIdx, trackIdx + 1)} disabled={!hasContent || trackIdx === currentTracks.length - 1}
+              <button onClick={() => goTo(catIdx, (trackIdx + 1) % currentTracks.length)} disabled={!hasContent}
                 className="text-white/60 hover:text-white disabled:opacity-20 transition-colors active:scale-90"><IconNext /></button>
             </div>
 
