@@ -56,33 +56,27 @@ const IconShuffle = () => (
 
 function BgLayer({ track, visible, shift }: { track: Track; visible: boolean; shift: number }) {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [videoReady, setVideoReady] = useState(false);
 
   useEffect(() => {
-    setVideoReady(false);
     if (track.isVideo && videoRef.current) {
       videoRef.current.load();
       videoRef.current.play().catch(() => {});
     }
   }, [track.visual, track.isVideo]);
 
-  const style = (extra?: object) => ({
+  const style = {
     transform: `scale(1.15) translateX(${shift * -20}px)`,
     filter: 'brightness(0.72)',
-    ...extra,
-  });
+  };
 
   return (
     <div className="absolute inset-0 transition-opacity duration-1000 ease-in-out" style={{ opacity: visible ? 1 : 0 }}>
-      {/* thumbnail jpg loads instantly — always shown as base layer */}
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={track.thumbnail} alt="" className="absolute inset-0 w-full h-full object-cover" style={style()} />
-      {/* video fades in on top once ready */}
-      {track.isVideo && (
-        <video ref={videoRef} src={track.visual} autoPlay loop muted playsInline
-          className="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000"
-          style={style({ opacity: videoReady ? 1 : 0 })}
-          onCanPlay={() => setVideoReady(true)} />
+      {track.isVideo ? (
+        <video ref={videoRef} src={track.visual} poster={track.thumbnail} autoPlay loop muted playsInline
+          className="absolute inset-0 w-full h-full object-cover" style={style} />
+      ) : (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={track.thumbnail} alt="" className="absolute inset-0 w-full h-full object-cover" style={style} />
       )}
     </div>
   );
@@ -138,17 +132,6 @@ export default function AudioPlayer() {
   const [showHint, setShowHint] = useState(true);
   useEffect(() => { const t = setTimeout(() => setShowHint(false), 3200); return () => clearTimeout(t); }, []);
 
-  // thumbnail visibility — hides 5s after playback starts, reappears when paused or track changes
-  const [showThumb, setShowThumb] = useState(true);
-  const thumbTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
-  useEffect(() => {
-    clearTimeout(thumbTimer.current);
-    setShowThumb(true);
-    if (isPlaying) {
-      thumbTimer.current = setTimeout(() => setShowThumb(false), 5000);
-    }
-    return () => clearTimeout(thumbTimer.current);
-  }, [isPlaying, trackIdx, catIdx]);
 
   // always-current refs
   const catIdxRef   = useRef(0);      catIdxRef.current   = catIdx;
@@ -437,29 +420,6 @@ export default function AudioPlayer() {
         </div>
       )}
 
-      {/* three-column content area */}
-      <div className="absolute inset-x-0 flex items-center justify-center gap-8 px-6"
-        style={{ top: 'max(env(safe-area-inset-top), 44px)', bottom: 'calc(var(--panel-h, 200px) + 110px)' }}>
-
-
-        {/* Center: artwork */}
-        <div className="relative rounded-2xl overflow-hidden shrink-0 pointer-events-none transition-opacity duration-1000 ease-in-out"
-          style={{ width: 'min(52vw, min(44vh, 320px))', aspectRatio: '1/1', boxShadow: '0 12px 72px rgba(0,0,0,0.7)', opacity: showThumb ? 1 : 0 }}>
-          {hasContent ? ([0, 1] as const).map(slot => (
-            <div key={slot} className="absolute inset-0 transition-opacity duration-1000 ease-in-out"
-              style={{ opacity: activeBg === slot ? 1 : 0 }}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={bgSlots[slot].thumbnail} alt="" className="w-full h-full object-cover" />
-            </div>
-          )) : (
-            <div className="absolute inset-0 flex items-center justify-center"
-              style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
-              <p className="font-sans text-[11px] text-white/20 text-center px-4">Add sessions in<br/>config/content.ts</p>
-            </div>
-          )}
-        </div>
-
-      </div>
 
       {/* carousel — session titles */}
       {hasContent && (
