@@ -424,25 +424,6 @@ export default function AudioPlayer() {
         )}
       </div>
 
-      {/* category dots + desktop arrows */}
-      {hasContent && (
-        <div className="absolute right-4 flex flex-col items-center gap-2 transition-all duration-700"
-          style={{ top: '50%', transform: 'translateY(-50%)', opacity: uiVisible ? 1 : 0, pointerEvents: uiVisible ? 'auto' : 'none' }}>
-          <button onClick={e => { e.stopPropagation(); goTo(catIdx - 1, 0); }} disabled={catIdx === 0}
-            className="hidden md:flex items-center justify-center w-6 h-6 text-white/40 hover:text-white/80 disabled:opacity-10 transition-colors">
-            <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4"><path d="M7.41 15.41 12 10.83l4.59 4.58L18 14l-6-6-6 6z"/></svg>
-          </button>
-          {allCategories.map((_, i) => (
-            <button key={i} onClick={e => { e.stopPropagation(); goTo(i, 0); }}
-              className="transition-all duration-300 rounded-full bg-white"
-              style={{ width: 5, height: i === catIdx ? 22 : 5, opacity: i === catIdx ? 0.85 : 0.28 }} />
-          ))}
-          <button onClick={e => { e.stopPropagation(); goTo(catIdx + 1, 0); }} disabled={catIdx === allCategories.length - 1}
-            className="hidden md:flex items-center justify-center w-6 h-6 text-white/40 hover:text-white/80 disabled:opacity-10 transition-colors">
-            <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4"><path d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg>
-          </button>
-        </div>
-      )}
 
 
       {/* carousel — session titles */}
@@ -474,17 +455,6 @@ export default function AudioPlayer() {
         </div>
       )}
 
-      {/* session dots */}
-      {hasContent && (
-        <div className="absolute inset-x-0 flex justify-center items-center gap-[7px] transition-all duration-700"
-          style={{ bottom: 'calc(var(--panel-h, 200px) + 24px)', opacity: uiVisible ? 1 : 0, paddingRight: 24 }}>
-          {currentTracks.map((_, i) => (
-            <button key={i} onClick={e => { e.stopPropagation(); goTo(catIdx, i); }}
-              className="transition-all duration-300 rounded-full bg-white"
-              style={{ width: i === trackIdx ? 22 : 5, height: 5, opacity: i === trackIdx ? 0.85 : 0.28 }} />
-          ))}
-        </div>
-      )}
 
       {/* about / support buttons — always visible */}
       <div className="absolute inset-x-0 flex items-center justify-center gap-3"
