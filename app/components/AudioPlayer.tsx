@@ -368,11 +368,35 @@ export default function AudioPlayer() {
         </div>
       )}
 
-      {/* logo */}
+      {/* logo — inlined so CSS animations work on iOS Safari */}
       <div className="absolute inset-x-0 flex justify-center pointer-events-none z-10"
         style={{ top: 'max(env(safe-area-inset-top), 44px)' }}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/logo.svg" alt="Vibroacoustic Wellness" style={{ width: 180, opacity: 0.9 }} />
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 248" fill="none" style={{ width: 180, opacity: 0.9 }}>
+          <style>{`
+            @keyframes ripple {
+              0%   { opacity: 1; }
+              30%  { opacity: 0.1; }
+              60%  { opacity: 1; }
+              100% { opacity: 1; }
+            }
+            .r0 { animation: ripple 7.5s ease-in-out infinite 0s; }
+            .r1 { animation: ripple 7.5s ease-in-out infinite 0.25s; }
+            .r2 { animation: ripple 7.5s ease-in-out infinite 0.5s; }
+            .r3 { animation: ripple 7.5s ease-in-out infinite 0.75s; }
+            .r4 { animation: ripple 7.5s ease-in-out infinite 1.0s; }
+            .r5 { animation: ripple 7.5s ease-in-out infinite 1.25s; }
+            .r6 { animation: ripple 7.5s ease-in-out infinite 1.5s; }
+          `}</style>
+          <circle className="r0" cx="100" cy="96" r="6.5" fill="white"/>
+          <circle className="r1" cx="100" cy="96" r="17" stroke="white" strokeWidth="5"/>
+          <circle className="r2" cx="100" cy="96" r="28" stroke="white" strokeWidth="4.5"/>
+          <circle className="r3" cx="100" cy="96" r="39.5" stroke="white" strokeWidth="4.5" pathLength="100" strokeDasharray="21 4" strokeDashoffset="98"/>
+          <circle className="r4" cx="100" cy="96" r="51.5" stroke="white" strokeWidth="4" pathLength="100" strokeDasharray="21 4" strokeDashoffset="98"/>
+          <circle className="r5" cx="100" cy="96" r="64" stroke="white" strokeWidth="3.5" pathLength="100" strokeDasharray="21 4" strokeDashoffset="98"/>
+          <circle className="r6" cx="100" cy="96" r="77" stroke="white" strokeWidth="3" pathLength="100" strokeDasharray="21 4" strokeDashoffset="98"/>
+          <text x="100" y="194" textAnchor="middle" fontFamily="system-ui, -apple-system, sans-serif" fontSize="12" fontWeight="700" letterSpacing="5" fill="white" opacity="0.9">VIBROACOUSTIC</text>
+          <text x="100" y="213" textAnchor="middle" fontFamily="system-ui, -apple-system, sans-serif" fontSize="12" fontWeight="700" letterSpacing="9" fill="white" opacity="0.9">WELLNESS</text>
+        </svg>
       </div>
 
       {/* top bar */}
