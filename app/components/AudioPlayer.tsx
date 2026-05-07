@@ -67,11 +67,11 @@ function BgLayer({ track, visible, shift }: { track: Track; visible: boolean; sh
     <div className="absolute inset-0 transition-opacity duration-1000 ease-in-out" style={{ opacity: visible ? 1 : 0 }}>
       {track.isVideo ? (
         <video ref={videoRef} src={track.visual} autoPlay loop muted playsInline className="w-full h-full object-cover"
-          style={{ transform: `scale(1.15) translateX(${shift * -20}px)`, filter: 'blur(40px) brightness(0.72)' }} />
+          style={{ transform: `scale(1.15) translateX(${shift * -20}px)`, filter: 'brightness(0.72)' }} />
       ) : (
         // eslint-disable-next-line @next/next/no-img-element
         <img src={track.visual} alt="" className="w-full h-full object-cover"
-          style={{ transform: `scale(1.15) translateX(${shift * -20}px)`, filter: 'blur(40px) brightness(0.72)' }} />
+          style={{ transform: `scale(1.15) translateX(${shift * -20}px)`, filter: 'brightness(0.72)' }} />
       )}
     </div>
   );
@@ -84,7 +84,7 @@ const HIDE_AFTER = 4500;
 
 const allCategories = CATEGORIES.filter(c => c.tracks.length > 0);
 const hasContent    = allCategories.length > 0;
-const placeholder: Track = { title: '', src: '', audioType: '', visual: '', isVideo: false };
+const placeholder: Track = { title: '', src: '', audioType: '', thumbnail: '', visual: '', isVideo: false };
 
 export default function AudioPlayer() {
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -126,6 +126,18 @@ export default function AudioPlayer() {
   // gesture hint
   const [showHint, setShowHint] = useState(true);
   useEffect(() => { const t = setTimeout(() => setShowHint(false), 3200); return () => clearTimeout(t); }, []);
+
+  // thumbnail visibility — hides 5s after playback starts, reappears when paused or track changes
+  const [showThumb, setShowThumb] = useState(true);
+  const thumbTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  useEffect(() => {
+    clearTimeout(thumbTimer.current);
+    setShowThumb(true);
+    if (isPlaying) {
+      thumbTimer.current = setTimeout(() => setShowThumb(false), 5000);
+    }
+    return () => clearTimeout(thumbTimer.current);
+  }, [isPlaying, trackIdx, catIdx]);
 
   // always-current refs
   const catIdxRef   = useRef(0);      catIdxRef.current   = catIdx;
@@ -350,6 +362,13 @@ export default function AudioPlayer() {
         </div>
       )}
 
+      {/* logo */}
+      <div className="absolute left-5 pointer-events-none z-10"
+        style={{ top: 'max(env(safe-area-inset-top), 44px)' }}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/logo.svg" alt="Vibroacoustic Wellness" style={{ width: 180, opacity: 0.9 }} />
+      </div>
+
       {/* top bar */}
       <div className="absolute top-0 inset-x-0 flex items-start justify-between px-7 transition-all duration-700 ease-out"
         style={{ paddingTop: 'max(env(safe-area-inset-top), 44px)', paddingBottom: 16,
@@ -399,23 +418,15 @@ export default function AudioPlayer() {
       <div className="absolute inset-x-0 flex items-center justify-center gap-8 px-6"
         style={{ top: 'max(env(safe-area-inset-top), 44px)', bottom: 'calc(var(--panel-h, 200px) + 110px)' }}>
 
-        {/* Left: category description */}
-        <div className="hidden md:flex flex-col flex-1 max-w-[240px] self-center max-h-full overflow-y-auto">
-          {currentCat?.description ? (
-            <p className="font-sans text-[12px] leading-[1.75] text-white/40 whitespace-pre-line">{currentCat.description}</p>
-          ) : (
-            <p className="font-sans text-[11px] italic text-white/15">Add a description in config/content.ts</p>
-          )}
-        </div>
 
         {/* Center: artwork */}
-        <div className="relative rounded-2xl overflow-hidden shrink-0 pointer-events-none"
-          style={{ width: 'min(52vw, min(44vh, 320px))', aspectRatio: '1/1', boxShadow: '0 12px 72px rgba(0,0,0,0.7)' }}>
+        <div className="relative rounded-2xl overflow-hidden shrink-0 pointer-events-none transition-opacity duration-1000 ease-in-out"
+          style={{ width: 'min(52vw, min(44vh, 320px))', aspectRatio: '1/1', boxShadow: '0 12px 72px rgba(0,0,0,0.7)', opacity: showThumb ? 1 : 0 }}>
           {hasContent ? ([0, 1] as const).map(slot => (
             <div key={slot} className="absolute inset-0 transition-opacity duration-1000 ease-in-out"
               style={{ opacity: activeBg === slot ? 1 : 0 }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={bgSlots[slot].visual} alt="" className="w-full h-full object-cover" />
+              <img src={bgSlots[slot].thumbnail} alt="" className="w-full h-full object-cover" />
             </div>
           )) : (
             <div className="absolute inset-0 flex items-center justify-center"
@@ -425,27 +436,6 @@ export default function AudioPlayer() {
           )}
         </div>
 
-        {/* Right: session listing */}
-        <div className="hidden md:flex flex-col flex-1 max-w-[240px] self-center max-h-full overflow-y-auto gap-0.5">
-          {currentTracks.map((t, i) => (
-            <button key={i} onClick={e => { e.stopPropagation(); goTo(catIdx, i); }}
-              className="flex items-baseline gap-2.5 text-left group transition-colors">
-              <span className="font-sans text-[10px] tabular-nums shrink-0 transition-colors"
-                style={{ color: i === trackIdx ? 'rgba(255,255,255,0.5)' : 'rgba(255,255,255,0.2)' }}>
-                {String(i + 1).padStart(2,'0')}
-              </span>
-              <div className="flex flex-col">
-                <span className="font-sans text-[12px] leading-snug transition-colors group-hover:text-white/70"
-                  style={{ color: i === trackIdx ? 'rgba(255,255,255,0.85)' : 'rgba(255,255,255,0.3)' }}>
-                  {t.title}
-                </span>
-                {t.duration && (
-                  <span className="font-sans text-[10px]" style={{ color: 'rgba(255,255,255,0.2)' }}>{t.duration}</span>
-                )}
-              </div>
-            </button>
-          ))}
-        </div>
       </div>
 
       {/* carousel — session titles */}
@@ -489,17 +479,17 @@ export default function AudioPlayer() {
         </div>
       )}
 
-      {/* about / support buttons */}
-      <div className="absolute left-6 flex items-center gap-3 transition-all duration-700"
-        style={{ bottom: 'calc(var(--panel-h, 200px) + 22px)', opacity: uiVisible ? 1 : 0, pointerEvents: uiVisible ? 'auto' : 'none' }}
+      {/* about / support buttons — always visible */}
+      <div className="absolute left-6 flex items-center gap-3"
+        style={{ bottom: 'calc(var(--panel-h, 200px) + 22px)' }}
         onClick={e => e.stopPropagation()}>
         <button onClick={() => setShowAbout(true)}
-          className="font-sans text-[11px] tracking-[0.2em] uppercase text-white/35 hover:text-white/65 transition-colors">
+          className="font-sans text-[14px] font-semibold tracking-[0.15em] uppercase text-white/70 hover:text-white transition-colors">
           About
         </button>
-        <span className="text-white/15 text-xs">·</span>
+        <span className="text-white/30 text-sm">·</span>
         <button onClick={() => setShowDonate(true)}
-          className="font-sans text-[11px] tracking-[0.2em] uppercase text-white/35 hover:text-white/65 transition-colors">
+          className="font-sans text-[14px] font-semibold tracking-[0.15em] uppercase text-white/70 hover:text-white transition-colors">
           Support
         </button>
       </div>

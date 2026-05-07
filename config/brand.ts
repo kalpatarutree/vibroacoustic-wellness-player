@@ -16,15 +16,15 @@ Sessions range from deep relaxation and sleep support to focused awareness and g
 
   links: {
     website:   '',   // e.g. 'https://yourdevice.com'
-    instagram: '',
+    instagram: 'https://instagram.com/vibroacousticwellness',
     facebook:  '',
-    youtube:   '',
+    youtube:   'https://youtube.com/@vibroacousticwellness?si=3zJTyeJfJJzhjeHa',
   },
 
   // Support / purchase options
   support: {
     message: 'Support our work and help bring vibroacoustic wellness to more people.',
-    paypal:   '',   // PayPal.me link
+    paypal:   'https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=curtis.humphrey%40gmail.com',
     venmo:    '',   // @handle
     cashapp:  '',   // $cashtag
     website:  '',   // "Buy / Learn More" link

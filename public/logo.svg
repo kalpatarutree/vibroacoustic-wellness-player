@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 248" fill="none">
+
+  <!-- center dot -->
+  <circle cx="100" cy="96" r="6.5" fill="white"/>
+
+  <!-- ring 1 — solid -->
+  <circle cx="100" cy="96" r="17" stroke="white" stroke-width="5"/>
+
+  <!-- ring 2 — solid -->
+  <circle cx="100" cy="96" r="28" stroke="white" stroke-width="4.5"/>
+
+  <!-- ring 3 — 4 arcs, gaps at N/E/S/W -->
+  <circle cx="100" cy="96" r="39.5" stroke="white" stroke-width="4.5"
+    pathLength="100" stroke-dasharray="21 4" stroke-dashoffset="98"/>
+
+  <!-- ring 4 -->
+  <circle cx="100" cy="96" r="51.5" stroke="white" stroke-width="4"
+    pathLength="100" stroke-dasharray="21 4" stroke-dashoffset="98"/>
+
+  <!-- ring 5 -->
+  <circle cx="100" cy="96" r="64" stroke="white" stroke-width="3.5"
+    pathLength="100" stroke-dasharray="21 4" stroke-dashoffset="98"/>
+
+  <!-- ring 6 — outermost -->
+  <circle cx="100" cy="96" r="77" stroke="white" stroke-width="3"
+    pathLength="100" stroke-dasharray="21 4" stroke-dashoffset="98"/>
+
+  <!-- label -->
+  <text x="100" y="194" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="12" font-weight="700" letter-spacing="5"
+    fill="white" opacity="0.9">VIBROACOUSTIC</text>
+  <text x="100" y="213" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="12" font-weight="700" letter-spacing="9"
+    fill="white" opacity="0.9">WELLNESS</text>
+
+</svg>
