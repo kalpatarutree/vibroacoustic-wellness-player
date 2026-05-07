@@ -12,7 +12,7 @@ export const BRAND = {
 
 Research has found that this can be helpful with general conditions like anxiety and insomnia, but also relieve suffering associated with autism, dementia, and other neurodivergent orientations.
 
-The tracks are composed with a decades-rich background in psychoacoustics and sound healing modalities. A collection of carefully curated sounds can be found here within this app and used in vibroacoustic devices, saving the users from having to search platforms like YouTube and Spotify — which makes it hard to catalog and collect the desired sounds, not to mention having to deal with advertisements and subscription fees. Not to mention the ever-increasing incidences of AI generated music, which from a sound healing perspective, are not conducive to a human being's greatest wellness.
+The tracks are composed with a decades-rich background in psychoacoustics and sound healing modalities. A collection of carefully curated sounds can be found here within this app and used in vibroacoustic devices, saving users from having to search platforms like YouTube and Spotify — which makes it difficult to catalog and collect the desired sounds, and having to deal with advertisements and subscription fees. Beyond that, there are the ever-increasing incidences of AI-generated music, which from a sound healing perspective are not conducive to a human being's greatest wellness.
 
 It is with great thought, care, and joy that this app and these devices have been created, and it is our deepest prayer that you may find benefit.`,
 
