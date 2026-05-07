@@ -1,19 +1,13 @@
 {
-  "name": "MST Audio Player",
-  "short_name": "MST Player",
-  "description": "Offline PWA audio player for MST tracks",
+  "name": "Vibroacoustic Wellness",
+  "short_name": "VA Wellness",
+  "description": "Sound healing through precision vibroacoustic technology.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0f0f0f",
   "theme_color": "#0f0f0f",
   "orientation": "portrait-primary",
   "icons": [
-    {
-      "src": "/icon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
-      "purpose": "any"
-    },
     {
       "src": "/icon-192.png",
       "sizes": "192x192",
